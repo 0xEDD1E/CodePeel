@@ -7,25 +7,33 @@
 
 int main(int argc, char *argv[])
 {
+    printf("CodePeel v1.0\nSeparating codes and comments from a source file.\n");
     if (argc != 4) {
-        puts("usage: asmcodepeel <input file> <code file> <comment file>");
+        puts("usage: codepeel <input file> <code file> <comment file>");
         exit(1);
     }
 
+
     FILE *fsrc, *fcod, *fcom;
 
-    if ((fsrc = fopen(argv[1], "r")) == NULL) {
-        perror("source file");
+    if ((fsrc = fopen(argv[1], "r")) != NULL) {
+        printf("successfully opened %s for reading.\n", argv[1]);
+    } else {
+        perror(argv[1]);
         exit(errno);
     }
 
-    if ((fcod = fopen(argv[2], "w")) == NULL) {
-        perror("creating code file");
+    if ((fcod = fopen(argv[2], "w")) != NULL) {
+        printf("successfully opened %s for writing.\n", argv[2]);
+    } else {
+        perror(argv[2]);
         exit(errno);
     }
 
-    if ((fcom = fopen(argv[3], "w")) == NULL) {
-        perror("creating comment file");
+    if ((fcom = fopen(argv[3], "w")) != NULL) {
+        printf("successfully opened %s for writing.\n", argv[3]);
+    } else {
+        perror(argv[3]);
         exit(errno);
     }
 
@@ -35,11 +43,10 @@ int main(int argc, char *argv[])
 
     processfiles(fsrc, fcod, fcom);
 
-    printf("Assembly Code Peeler v 1.1\nSeparates Codes and Comments in an assembly code file\n"
-                   "%d lines found in %s\n"
-                   "%d code lines separated into %s\n"
-                   "%d comment lines separated into %s\n"
-                   "...Successfully\n", n_rawlines, argv[1], n_codelines, argv[2], n_commlines, argv[3]);
+    printf("%d lines found in %s\n"
+           "%d code lines separated into %s\n"
+           "%d comment lines separated into %s\n"
+           "...Successfully\n", n_rawlines, argv[1], n_codelines, argv[2], n_commlines, argv[3]);
     return 0;
 }
 
