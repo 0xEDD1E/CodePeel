@@ -1,0 +1,187 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+section .bss            
+	MSTRLEN equ 11      
+	Mstr: resb MSTRLEN  
+	PSTRLEN equ 11      
+	Pstr: resb PSTRLEN  
+
+section .data                                                   
+	PromptMsg: db "Input the maximum number (< 4294967295): "   
+	PROMPTLEN equ $-PromptMsg                                   
+	E_NotANumber: db "ERROR: Not A Number", 0AH                 
+	E_NOTANUMLEN equ $-E_NotANumber                             
+	newLine db 0AH                                              
+	InitMsg: db "Perfect number found in the given range: ", 0AH 
+	InitLen equ $-InitMsg                                       
+	Arrow: db "---->"
+
+section .text
+global _start
+_start:
+	nop
+Prompt:
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, PromptMsg
+	mov edx, PROMPTLEN
+	int 80H
+GetMaxStr:
+	mov eax, 3
+	mov ebx, 0
+	mov ecx, Mstr
+	mov edx, MSTRLEN
+	int 80H
+	
+PrintInit:
+	pushad
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, InitMsg
+	mov edx, InitLen
+	int 80H
+	popad
+
+
+Str2Num:
+	dec eax
+	mov esi, eax
+	xor eax, eax
+	xor ecx, ecx
+	xor ebx, ebx
+Str2Num_Loop:
+	mov bl, byte [Mstr + ecx]
+	cmp bl, 30H
+	jb ERRNAN
+	cmp bl, 39H
+	ja ERRNAN
+	sub bl, 30H
+	mov edi, 0AH
+	mul edi
+	add eax, ebx
+	inc ecx
+	cmp ecx, esi
+	jne Str2Num_Loop
+
+	mov esi, eax
+	xor eax, eax
+	xor edi, edi
+	xor ebx, ebx
+PerfectNum_BigStep:
+	inc ebx
+	cmp ebx, esi
+	je Exit
+	xor edi, edi
+	mov ecx, 1
+PerfectNum_LittleStep:
+	xor edx, edx
+	mov eax, ebx
+	cmp ecx, ebx
+	je PerfectNum_BigStep_Out
+	div ecx
+	cmp edx, 0
+	jne NextLittleStep
+	add edi, ecx
+NextLittleStep:
+	inc ecx
+	jmp PerfectNum_LittleStep
+PerfectNum_BigStep_Out:
+	cmp edi, ebx
+	jne PerfectNum_BigStep
+	mov eax, edi
+	push esi
+	push eax
+	push ebx
+	push ecx
+	push edx
+	
+
+
+
+Num2Str:                       
+	mov edi, 0AH
+
+	xor ecx, ecx
+	mov edi, 0AH
+	
+
+Num2Str_Loop:                   
+	xor edx, edx                
+	div edi                     
+	add edx, 30H                
+	mov byte [Pstr + ecx], dl   
+	inc ecx	                    
+	cmp eax, 0                  
+	jne Num2Str_Loop            
+
+Num2Str_Reverse:
+	xor esi, esi
+	xor edi, edi
+	mov esi, ecx
+	dec esi
+
+
+	jz Print
+	
+Num2Str_Reverse_Loop:
+	mov cl, byte [Pstr + esi]
+	mov dl, byte [Pstr + edi]
+	mov byte [Pstr + edi], cl
+	mov byte [Pstr + esi], dl
+	inc edi
+	dec esi
+	cmp esi, edi
+	ja Num2Str_Reverse_Loop
+	
+Print:
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, Pstr
+	mov edx, 100
+	int 80H
+	
+	mov eax, 4
+	mov ebx, 1
+	mov ecx, newLine
+	mov edx, 1
+	int 80H
+	
+	pop edx
+	pop ecx
+	pop ebx
+	pop eax
+	pop esi
+	jmp PerfectNum_BigStep
+	
+	
+ERRNAN:
+
+
+
+
+
+	
+
+
+
+Exit:
+	mov eax, 1
+	mov ebx, 0
+	int 80H

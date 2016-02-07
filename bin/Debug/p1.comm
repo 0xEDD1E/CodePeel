@@ -1,0 +1,62 @@
+;
+; Program Name		:	PerfectNum
+; Program Version	:	Version 1.0a
+; Source File Name	:	perfectnum.asm
+; Date Created		:	2015/01/26
+; Last modified		:	2015/01/26
+; Author			: 	0xEDD1E (codemaster.eddie@gmail.com)
+; Description		:	This Program Lists all the perfect numbers between 1
+; 						and user given number. 
+;
+; ==================================================================
+; ALGORITHM : PerfectNum
+; INPUT	    : Maximum number to check for perfectness (M)
+; OUTPUT    : All the perfect numbers (P); P is 1 < P < M
+; ==================================================================
+;
+; Later
+; 
+;
+                        ; UNINITIAZED DATA SECTION [BSS]
+                     ; Bytes to reserve for Mstr
+                     ; Reserve 100 bytes for Mstr
+                     ; Bytes to reserve for Pstr
+                     ; Reserve 100 bytes for Pstr
+; END OF BSS SECTION
+                                                                ; INITIALIZED DATA SECTION (DATA)
+                                                             ; Prompt message for Maximum number
+                                                             ; Maximum bytes (digits) to read for Maximum number
+                                                             ; Error Message if NaN input
+                                                             ; NaN Message length
+                                                             ; A New Line
+                                                              ; Massege to print before calculations
+                                                             ; InitMsg length
+; END OF DATA SECTION
+; ===================================================================
+; block Str2Num(String Mstr, Int Num in EAX)
+; ==================================================================
+; ==================================================================
+; This procedure converts a Number into its String representation
+; Before Jump onto this block push the Number to the stack
+                               ; Parent Block, Child of _start:
+;  	pop eax
+; This Loop generate the character string for the number, but in reverse odrder
+                                ; Child of Num2Str
+                             ; clear EDX at the start. this avoids the SIGFPE
+                             ; DIVide EAX's value by EDI (0AH), QUO->EAX, REM->EDX
+                             ; ADD 30H to value in EDX to produce the ASCII character (30H = 0 <--> 39H = 9)
+                             ; MOV DL into the place indicated by Pstr + ECX
+                             ; INCrease the ECX's value
+                             ; check if EAX has become 0, If yes it means the end
+                             ; If EAX is not 0 jump to Num2Str_Loop
+; This 
+;   - cmp esi, 0 
+;   - je Print 
+; 	mov eax, 4
+; 	mov ebx, 1
+; 	mov ecx, E_NotANumber
+; 	mov edx, E_NOTANUMLEN
+; 	int 80H
+; 	mov eax, 1
+; 	mov ebx, 1
+; 	int 80H
