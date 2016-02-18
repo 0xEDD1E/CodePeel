@@ -1,8 +1,11 @@
-hell#hello
-`
-   good 
-   block
-   of 
-   comment
-!
-int main() {}
+#include <stdio.h>
+// main function
+int main (void) {
+    /* This is a block comment
+     * this has 2 lines
+     */
+    
+    printf("hello /* world */");
+    
+    return 0;
+}

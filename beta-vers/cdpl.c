@@ -66,7 +66,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 	const int MELEN = strlen(me);
 	int IN = 0, INC = 0;
 	// int sz_cod = 0, sz_com = 0;
-	char *tokbuf = malloc(sizeof (char) * 3/*BiggestOf(MELEN, MBLEN, SSLEN)*/);
+	char *tokbuf = malloc(sizeof (char) * BiggestOf(MELEN, MBLEN, SSLEN));
 	// printf("%s, %s, %s\n\n\n", ss, mb, me);
 	
 	// when read chars into raw_buff, ptr_buff initialy points to the cod_buff;
@@ -84,7 +84,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 				else IN = 0;
 			}
 			
-			if (*rbufp != *ss && *rbufp != *mb && *rbufp != *me || INC || IN) {
+			if (*rbufp != *ss && *rbufp != *mb && *rbufp != *me || IN) {
 				*ptr_buff++ = *rbufp;
 			} else {
 				
@@ -93,6 +93,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 				if (strcmp(tokbuf, ss) == 0) {
 					cod_buff_svp = ptr_buff; 
 					ptr_buff = com_buff;
+					rbufp += SSLEN;
 					// ptr_buff = strcat(ptr_buff, ss);
 					
 					while (*rbufp != '\n') {
@@ -110,9 +111,9 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 					*(tokbuf + MBLEN) = '\0';
 					
 					if (strcmp(tokbuf, mb) == 0) {
-						INC = 1;
 						cod_buff_svp = ptr_buff;
 						ptr_buff = com_buff_svp;
+						rbufp += MBLEN;
 						// ptr_buff = strcat(ptr_buff, mb);
 						
 				
@@ -120,12 +121,12 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 						strncpy(tokbuf, rbufp, MELEN);
 						*(tokbuf + MELEN) = '\0';
 						if (strcmp(tokbuf, me) == 0) {
-							INC = 0;
-							ptr_buff = strcat(ptr_buff, me);
+							// ptr_buff = strcat(ptr_buff, me);
 							com_buff_svp = ptr_buff; 
 							ptr_buff = cod_buff_svp;
+							rbufp += MELEN;
 						} else 
-							*ptr_buff = *rbufp;
+							*ptr_buff++ = *rbufp;
 				
 					}
 
