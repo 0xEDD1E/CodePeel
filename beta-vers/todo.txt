@@ -1,0 +1,5 @@
+TODO List : cdpl.c
+	* comments are not printed as a read-friendly output, TABs, SPACEs are not handled properly - This may be little hard to correct.
+	* above situation occurs mostly if source file was edited with a high-level text editor OR IDE (notepad++, Kate etc...)
+	
+Above issues remain to recover.  
