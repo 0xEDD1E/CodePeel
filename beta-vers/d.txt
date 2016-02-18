@@ -1,11 +1,11 @@
 #include <stdio.h>
-// main function
-int main (void) {
-    /* This is a block comment
-     * this has 2 lines
-     */
-    
-    printf("hello /* world */");
-    
-    return 0;
-}
+// hello world
+com @ block
+block
+block
+block
+@
+//jj
+com @jjf
+fg
+@

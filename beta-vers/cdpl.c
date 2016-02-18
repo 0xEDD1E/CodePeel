@@ -92,7 +92,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 				*(tokbuf + SSLEN) = '\0';
 				if (strcmp(tokbuf, ss) == 0) {
 					cod_buff_svp = ptr_buff; 
-					ptr_buff = com_buff;
+					ptr_buff = com_buff_svp;
 					rbufp += SSLEN;
 					// ptr_buff = strcat(ptr_buff, ss);
 					
@@ -113,7 +113,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 					if (strcmp(tokbuf, mb) == 0) {
 						cod_buff_svp = ptr_buff;
 						ptr_buff = com_buff_svp;
-						rbufp += MBLEN;
+						rbufp += MBLEN - 1;
 						// ptr_buff = strcat(ptr_buff, mb);
 						
 				
