@@ -1,5 +1,8 @@
 //
 // Created by 0xEDD1E on 2016-02-01.
+// Function: processfiles
+// Parameters: source stream, code streams, comment stream
+// Result: codes and comments in 2 different files
 //
 
 
