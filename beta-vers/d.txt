@@ -1,0 +1,8 @@
+hell#hello
+`
+   good 
+   block
+   of 
+   comment
+!
+int main() {}

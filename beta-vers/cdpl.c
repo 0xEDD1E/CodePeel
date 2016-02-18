@@ -1,12 +1,13 @@
-/*~*/
-
 #include <stdio.h>
+// com
+/* ll
+kk */
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
 #include <unistd.h>
-
+//com
 #define BiggestOf(H, B, S) ((S) > (B) ? (S) : ((H) > (B) ? (H) : (B)))
 
 #define BUFFLEN 1024
@@ -63,9 +64,9 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 	const int SSLEN = strlen(ss);
 	const int MBLEN = strlen(mb);
 	const int MELEN = strlen(me);
-	int IN = 0;
+	int IN = 0, INC = 0;
 	// int sz_cod = 0, sz_com = 0;
-	char *tokbuf = malloc(sizeof (char) * 2/*BiggestOf(MELEN, MBLEN, SSLEN)*/);
+	char *tokbuf = malloc(sizeof (char) * 3/*BiggestOf(MELEN, MBLEN, SSLEN)*/);
 	// printf("%s, %s, %s\n\n\n", ss, mb, me);
 	
 	// when read chars into raw_buff, ptr_buff initialy points to the cod_buff;
@@ -78,69 +79,62 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 							 // if "comment" ptr_buff points to com_buff.
 							 // DEFAULT ptr_buff->cod_buff
 		for (rbufp = raw_buff; rbufp < raw_buff + n_read; rbufp++) {
-			// snippet below will handle the string literals
 			if (*rbufp == '\"') {
 				if (IN == 0) IN = 1;
 				else IN = 0;
 			}
-			// if *rbufp == first char of ss, mb, me or rbufp is in a string literal 
-			//	copy the *rbufp to *cod_buff
-			// else
-			//	comment has occured.
-			// reconsider the "|| IN" condition 
-			if (*rbufp != *ss && *rbufp != *mb && *rbufp != *me || IN) {
+			
+			if (*rbufp != *ss && *rbufp != *mb && *rbufp != *me || INC || IN) {
 				*ptr_buff++ = *rbufp;
 			} else {
-				/*
-				 * This Algotithm roughly separate code and comments
-				 * Because program reads a chunk of characters this 
-				 * Algotithm should properly handle LFs[\n], and be carefull
-				 * when copying NULL chars (see [1:NULL])
-				 */
-				 
-				/** ERROR EXISTS IN strncpy,
-				 ** copying produce an error
-				 **/
-				strncpy(tokbuf, rbufp, SSLEN);
 				
+				strncpy(tokbuf, rbufp, SSLEN);
+				*(tokbuf + SSLEN) = '\0';
 				if (strcmp(tokbuf, ss) == 0) {
 					cod_buff_svp = ptr_buff; 
 					ptr_buff = com_buff;
-					ptr_buff = strcat(ptr_buff, ss);
-					while (*rbufp != '\n' && !*rbufp) {
+					// ptr_buff = strcat(ptr_buff, ss);
+					
+					while (*rbufp != '\n') {
 						*ptr_buff++ = *rbufp++;
 					}
+					
 					if (*rbufp == '\n') 
-						ptr_buff = strcat(ptr_buff, "\n"); 
+						*ptr_buff++ = '\n'; 
+					
 					com_buff_svp = ptr_buff;
 					ptr_buff = cod_buff_svp; 
 				
 				} else {
 					strncpy(tokbuf, rbufp, MBLEN);
+					*(tokbuf + MBLEN) = '\0';
+					
 					if (strcmp(tokbuf, mb) == 0) {
-						// save cod_buff position //-----------------------------------------
+						INC = 1;
 						cod_buff_svp = ptr_buff;
 						ptr_buff = com_buff_svp;
-						ptr_buff = strcat(ptr_buff, mb);
-						// ** FOR loop will take care of copying **
+						// ptr_buff = strcat(ptr_buff, mb);
+						
 				
 					} else {
 						strncpy(tokbuf, rbufp, MELEN);
+						*(tokbuf + MELEN) = '\0';
 						if (strcmp(tokbuf, me) == 0) {
+							INC = 0;
 							ptr_buff = strcat(ptr_buff, me);
-							com_buff_svp = ptr_buff; //----------------------------------------
+							com_buff_svp = ptr_buff; 
 							ptr_buff = cod_buff_svp;
-						} else // it's just an innocent characters
-							*ptr_buff = *rbufp; // it nothing above happened ptr_buff -> cod_buff;
+						} else 
+							*ptr_buff = *rbufp;
 				
 					}
 
 				}
 			}
 			
-		// END FOR	
 		}
 		write(1, cod_buff, BUFFLEN);
+		write(2, com_buff, BUFFLEN);
 	}
 	
 	
