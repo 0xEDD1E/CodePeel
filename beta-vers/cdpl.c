@@ -124,7 +124,7 @@ int codepeel(FILE *fsrc, FILE *fcod, FILE *fcom, char *comstr)
 							// ptr_buff = strcat(ptr_buff, me);
 							com_buff_svp = ptr_buff; 
 							ptr_buff = cod_buff_svp;
-							rbufp += MELEN;
+							rbufp += MELEN - 1;
 						} else 
 							*ptr_buff++ = *rbufp;
 				

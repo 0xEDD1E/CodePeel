@@ -1,0 +1,12 @@
+// first ss comment
+int main (void /* params */)
+{
+    /* first block comment
+     * this is test file 
+     */
+     
+     int ss = 0;
+     printf("%d = ss\n", ss);
+     
+     return 0; // return point
+}
